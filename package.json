@@ -1,0 +1,11 @@
+{ "name" : "serialport-test",
+    "version" : "0.0.1",
+    "description" : "",
+    "author": "Joseph Cheng <indiejoseph@gmail.com>",
+    "main": "./example.js",
+    "dependencies": {
+        "serialport": "*",
+		"socket.io": "0.9.6"
+    },
+    "engines": { "node": "0.6" }
+}

@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Arduino + Node.js + socket.io</title>
+	
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery.flow.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	
+	<style type="text/css">
+		body {
+		  font-family: sans-serif;
+		  font-size: 16px;
+		  margin: 50px;
+		  max-width: 800px;
+		}
+	</style>
+</head>
+<body>
+	<h1>Arduino + Node.js + socket.io</h1>
+
+    <div id="monitor" style="width:600px;height:300px;"></div>
+
+	<script type="text/javascript">
+		!function() {
+			var $monitor = $("#monitor");
+			var p1 = [];
+			var options = {
+				series: {
+					lines: { fill: true }
+				},
+				yaxis: {
+					min: 0,
+					max: 1100
+				}
+			};
+			var socket = io.connect("/", {
+				"reconnect" : true,
+				"reconnection delay" : 500,
+				"max reconnection attempts" : 10
+			});
+			
+			socket.on("connect", function(data) {
+				socket.emit("message", "Connected - " + (new Date()).toString());
+			});
+			
+			socket.on("message", function (data) {
+				var arr = [];
+				
+				if(p1.length > 9) p1.shift(); // Remove first items
+				p1.push(data);
+				
+				for(var i = 0; i < p1.length; i++) {
+					arr.push([i, p1[i]]);
+				} 
+				$.plot($monitor, [arr], options);
+			});
+			
+			$.plot($monitor, [p1], options);
+		}();
+	</script>
+</body>
+</html>
